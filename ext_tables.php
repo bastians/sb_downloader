@@ -1,6 +1,6 @@
 <?php
 if (!defined('TYPO3_MODE'))     die('Access denied.');
-require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'pi1/class.tx_sbdownloader_addFieldsToFlexForm.php';
+require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'Classes/class.tx_sbdownloader_addFieldsToFlexForm.php';
 
 // insert CSS file
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'sb_downloader');

@@ -31,14 +31,14 @@
 class tx_sbuserstats_hooks
 {
     function saveStats(&$content, $obj)
-    {   
-        $content += 1; // erhöhe $content um 1
+    {
+        $content += 1; // erhï¿½he $content um 1
         $datei = fopen('sfsdfsd.txt', r);
     }
 }
- 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sb_downloader/pi1/class.tx_sbdownloader_pi1.php']) {
-    include_once $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sb_downloader/pi1/class.tx_sbdownloader_pi1.php'];
+
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sb_downloader/Classes/class.tx_sbdownloader_pi1.php']) {
+    include_once $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sb_downloader/Classes/class.tx_sbdownloader_pi1.php'];
 }
 
 

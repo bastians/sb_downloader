@@ -42,7 +42,7 @@
 class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
 {
     var $prefixId      = 'tx_sbdownloader_pi1';        // Same as class name
-    var $scriptRelPath = 'pi1/class.tx_sbdownloader_pi1.php';    // Path to this script relative to the extension dir.
+    var $scriptRelPath = 'Classes/class.tx_sbdownloader_pi1.php';    // Path to this script relative to the extension dir.
     var $extKey        = 'sb_downloader';    // The extension key.
     // var $pi_checkCHash = true;
     var $filebasepath     = "uploads/tx_sbdownloader/";
@@ -67,7 +67,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $this->conf=$conf;
         $this->pi_setPiVarDefaults();
         $this->pi_loadLL();
-            
+
         // Preconfigure the typolink
         $this->local_cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance("TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer");
         $this->local_cObj->setCurrentVal($GLOBALS["TSFE"]->id);
@@ -78,12 +78,12 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $this->typolink_conf["additionalParams"],
             $this->typolink_conf["additionalParams."]
         );
-        unset($this->typolink_conf["additionalParams."]);    
- 
+        unset($this->typolink_conf["additionalParams."]);
+
         $this->initHooks();
-        
+
         $this->lang = $GLOBALS['TSFE']->config['config']['sys_language_uid'] ;
-                
+
         // take objects from dedicated page or sysfolder
         $this->download = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('download');
         $this->did = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('did'));
@@ -98,7 +98,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }
         if(isset($this->piVars['shortlink'])) {
             $this->shortlink = $this->piVars['shortlink'];
-        }        
+        }
         // flexform Integration
         $this->pi_initPIflexform(); // Init and get the flexform data of the plugin
 
@@ -110,7 +110,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         if(!empty($this->cat)) {
             $cat = $this->cat;
         }else{
-            $cat = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'dynField', 'sDEF');            
+            $cat = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'dynField', 'sDEF');
         }
 
         // print_r($cat);
@@ -124,14 +124,14 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $showFiledate = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'filedate', 's_conf');
         $showFiledate = trim($showFiledate) == '' ? $this->conf["showFiledate"] : $showFiledate;
         $showEditDate = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'showEditDate', 's_conf');
-        $orderby = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'orderby', 's_conf');    
-        $orderbyCats = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'orderbyCats', 's_conf');    
-        $orderby = trim($orderby) == '' ? $this->conf["sortBy"] : $orderby;        
-        $orderbyCats = trim($orderby) == '' ? $this->conf["sortByCats"] : $orderbyCats;        
-        $imagelink = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'imagelink', 's_conf');    
-        $imagelink = trim($imagelink) == '' ? $this->conf["imagelink"] : $imagelink;        
-        $limit = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'limit', 's_conf');    
-        $limit = trim($limit) == '' ? $this->conf["limit"] : $limit;        
+        $orderby = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'orderby', 's_conf');
+        $orderbyCats = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'orderbyCats', 's_conf');
+        $orderby = trim($orderby) == '' ? $this->conf["sortBy"] : $orderby;
+        $orderbyCats = trim($orderby) == '' ? $this->conf["sortByCats"] : $orderbyCats;
+        $imagelink = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'imagelink', 's_conf');
+        $imagelink = trim($imagelink) == '' ? $this->conf["imagelink"] : $imagelink;
+        $limit = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'limit', 's_conf');
+        $limit = trim($limit) == '' ? $this->conf["limit"] : $limit;
         $ascdesc = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'ascdesc', 's_conf');
         $ascdescCats = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'ascdescCats', 's_conf');
         $onlyFirst = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'onlyFirst', 's_conf');
@@ -145,18 +145,18 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $this->tabID = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'tabid', 's_template');
         $this->tabID = intval($this->tabID);
         $this->heigth = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'height', 's_template');
-        
+
         $this->licence = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'licence', 's_licence');
         if(empty($this->licence)) $this->licence = 0;
         if($this->licence) $secureDownloads = 1;
         // print_r($this->licence);
         // check orderby records
         if($orderby == 'singleID') {
-            $orderby = " FIELD(tx_sbdownloader_images.uid,$singlePIDs)";                
-        }    
+            $orderby = " FIELD(tx_sbdownloader_images.uid,$singlePIDs)";
+        }
         if($orderby == 'backend') {
-            $orderby = " tx_sbdownloader_images.sorting";                
-        }    
+            $orderby = " tx_sbdownloader_images.sorting";
+        }
         if(empty($orderby) || $orderby == "name") {
             $orderby = 'name';
             // $orderby = ' (ASCII(name) < 48 OR ASCII(name) > 57), name';
@@ -166,10 +166,10 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         // check orderby categories
         if(empty($orderbyCats) || $orderbyCats == "cat") {
             $orderbyCats = 'cat';
-        }        
+        }
 
-        
-        // print_r($orderbyCats);        
+
+        // print_r($orderbyCats);
         // Copy Flexform data to $this->config
         $items=array('ascdesc','ascdescCats','cat','downloadcount','filesize','onlyFirst','orderby','orderbyCats','secureDownloads','showCRDate','showEditDate','showFiledate','showMore','singlePIDs','imagelink','limit');
         foreach($items as $item){
@@ -182,34 +182,34 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $view = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'what_to_display', 'sDEF');
         } else {
             $view = $this->conf["what_to_display"];
-        }        
+        }
 
         // print_r($view);
-        
+
         // set licencecookie
         if($this->licenceAccepted) {
-            setcookie('sbdlicence', 'licence accepted', time()+172800); // 2 Tage gültig
+            setcookie('sbdlicence', 'licence accepted', time()+172800); // 2 Tage gï¿½ltig
         }
         // check if licence confirmed
         if($this->licence) {
-            if(!$_COOKIE["sbdlicence"]) { 
-                $checklicence = 1; 
-                unset($this->download);    
-            }else{                
-                $checklicence = 0;    
+            if(!$_COOKIE["sbdlicence"]) {
+                $checklicence = 1;
+                unset($this->download);
+            }else{
+                $checklicence = 0;
             }
         }
 
         if(isset($this->download)) {
             $this->download = $this->getLinkName($this->download, $this->did);
-                    
+
             // print_r($this->download);
             // exit;
             // $this->downloadImage(basename($this->download),$this->did);
             $this->downloadImage($this->download, $this->did);
-            exit;    
-        }        
-        
+            exit;
+        }
+
         $where=array();
 
         // Search
@@ -221,27 +221,27 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $where[]='tx_sbdownloader_images.linkdescription LIKE '.$keyword;
             $where=array('('.implode(' OR ', $where).')');
             // cache deaktivieren
-            $this->pi_USER_INT_obj = 1;    
+            $this->pi_USER_INT_obj = 1;
             // }elseif($checklicence){
             // cache deaktivieren
-            // $this->pi_USER_INT_obj = 1;                
+            // $this->pi_USER_INT_obj = 1;
         }else{
             // cache aktiviert
-            $this->pi_USER_INT_obj = 0;    
+            $this->pi_USER_INT_obj = 0;
         }
         // latest und search
         if(!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('sb_downloader')) {
-            $whereLatest = $where;    
+            $whereLatest = $where;
         }else{
             $whereLatest = array();
         }
         // if($checklicence){
         // cache deaktivieren
-        // $this->pi_USER_INT_obj = 1;    
+        // $this->pi_USER_INT_obj = 1;
         // }
         // separate views
         $view = explode(',', $view);
-        
+
         foreach($view as $mode){
             switch($mode){
             case 'LIST':
@@ -261,14 +261,14 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 // $singlePIDs = $GLOBALS['TSFE']->fe_user->getKey('ses','did');
                 // $where[]='tx_sbdownloader_images.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($singlePIDs).') AND deleted=0 AND hidden=0 ';
                 // $this->conf['view'] = 'SINGLE_ID';
-                // $content.=$this->getList($where);                        
-                break;                
+                // $content.=$this->getList($where);
+                break;
             case 'SINGLE_ID':
                 $this->template['template'] = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE_SINGLE_ID###');
                 $this->template['listItem'] = $this->cObj->getSubpart($this->template['template'], '###LIST_SINGLE_ITEM###');
                 $where[]='tx_sbdownloader_images.uid IN ('.$GLOBALS['TYPO3_DB']->cleanIntList($singlePIDs).') AND deleted=0 AND hidden=0 ';
                 $this->conf['view'] = 'SINGLE_ID';
-                $content.=$this->getList($where);                    
+                $content.=$this->getList($where);
                 break;
             case 'SEARCH':
                 $this->template['template'] = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE_SEARCH###');
@@ -276,28 +276,28 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 break;
             case 'LATEST':
                 $this->template['template'] = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE_LATEST###');
-                $this->template['listItem'] = $this->cObj->getSubpart($this->template['template'], '###LIST_LATEST_ITEM###');                    
-                $content.=$this->getList($whereLatest, $mode);                    
+                $this->template['listItem'] = $this->cObj->getSubpart($this->template['template'], '###LIST_LATEST_ITEM###');
+                $content.=$this->getList($whereLatest, $mode);
                 break;
             case 'CATEGORY':
                 if(empty($this->keyword)) {
-                    $this->template['template'] = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE_CAT###');    
+                    $this->template['template'] = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE_CAT###');
                     $content.=$this->getCat($this->config['cat']);
-                }                
-                break;    
+                }
+                break;
             case 'SHORTLINK':
                 $this->template['template'] = $this->cObj->getSubpart($this->templateCode, '###TEMPLATE###');
                 $this->template['listItem'] = $this->cObj->getSubpart($this->template['template'], '###LIST_ITEM###');
                 $where[]='tx_sbdownloader_images.shortlink="'.$this->shortlink.'" AND deleted=0 AND hidden=0 ';
                 // $this->conf['view'] = 'SHORTLINK';
-                $content.=$this->getList($where, "SHORTLINK");                    
-                break;                
-                // case 'LICENCECHECK':                                        
-                        // $content.=$this->getLicence($checklicence);    
+                $content.=$this->getList($where, "SHORTLINK");
+                break;
+                // case 'LICENCECHECK':
+                        // $content.=$this->getLicence($checklicence);
                 // break;
-                // case 'LICENCEACCEPTED':                            
-                        // $content.=$this->licenceAccepted($checklicence);    
-                break;                    
+                // case 'LICENCEACCEPTED':
+                        // $content.=$this->licenceAccepted($checklicence);
+                break;
             }
         }
 
@@ -310,13 +310,13 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * @param  int $download: id of row-field
      * @param  int $did:      id of download record
      * @return The generated form
-     */        
-    
+     */
+
     function getLinkName($download="",$did="")
     {
-        $res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('image', 'tx_sbdownloader_images', 'uid='.intval($did)); 
+        $res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('image', 'tx_sbdownloader_images', 'uid='.intval($did));
         while($row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
-            // $row=$this->getOverlay('tx_sbdownloader_images',$row);        
+            // $row=$this->getOverlay('tx_sbdownloader_images',$row);
             $images = explode(',', $row['image']);
             $i=0;
             // print_r($row);
@@ -330,27 +330,27 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }
         return $out;
     }
-    
+
     function getCat($parentCat="")
-    {        
+    {
         // if parentCat empty
         if(empty($parentCat)) return false;
         // if more than one category
-        if(strpos($parentCat, ",")!==false) return false;        
-        // get cats  
+        if(strpos($parentCat, ",")!==false) return false;
+        // get cats
         $where="AND tx_sbdownloader_images_parent_cat_mm.uid_foreign='$parentCat'";
         $orderby=$this->config['orderbyCats'].' '.$this->config['ascdescCats'];
         // $orderby='';
         // print_r($orderby);
-          
-          
-        // $res=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('tx_sbdownloader_cat.cat as catname,tx_sbdownloader_cat.uid as catuid','tx_sbdownloader_images_parent_cat_mm','tx_sbdownloader_cat','',$where.$this->cObj->enableFields('tx_sbdownloader_cat') ,'',$orderby,$limit);    
 
-     
+
+        // $res=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('tx_sbdownloader_cat.cat as catname,tx_sbdownloader_cat.uid as catuid','tx_sbdownloader_images_parent_cat_mm','tx_sbdownloader_cat','',$where.$this->cObj->enableFields('tx_sbdownloader_cat') ,'',$orderby,$limit);
+
+
         // $GLOBALS['TYPO3_DB']->store_lastBuiltQuery = 1;
-        // echo $GLOBALS['TYPO3_DB']->debug_lastBuiltQuery;     
+        // echo $GLOBALS['TYPO3_DB']->debug_lastBuiltQuery;
         // process query
-        $res=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('tx_sbdownloader_cat.cat as catname,tx_sbdownloader_cat.uid as catuid', 'tx_sbdownloader_cat', 'tx_sbdownloader_images_parent_cat_mm', '', $where.$this->cObj->enableFields('tx_sbdownloader_cat'), '', $orderby, $limit);        
+        $res=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('tx_sbdownloader_cat.cat as catname,tx_sbdownloader_cat.uid as catuid', 'tx_sbdownloader_cat', 'tx_sbdownloader_images_parent_cat_mm', '', $where.$this->cObj->enableFields('tx_sbdownloader_cat'), '', $orderby, $limit);
         $pageID=$GLOBALS["TSFE"]->id;
         $subcount = 0;
         while($cat=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
@@ -358,7 +358,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                    $catname = '<img src="'.$this->conf["catIcon"].'">&nbsp;&nbsp;'.$cat['catname'];
             }else {
                    $catname = $cat['catname'];
-            }                
+            }
             if(empty($this->subcats)) {
                    $subcats=$cat['catuid'];
             }else{
@@ -374,14 +374,14 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $content = $this->cObj->substituteMarkerArrayCached($this->template['template'], array(), $markerArray);
         // print_r($content);
         return $content;
-    }    
-    
+    }
+
     function getMarkerArray($image_row,$cat_rows=array())
     {
-        
+
         // print_r($image_row);
-        
-        if($this->config['imagelink']) {            
+
+        if($this->config['imagelink']) {
             // $this->conf["image."]["imageLinkWrap"]["enable"] = 0;
             $this->conf["image."]["imageLinkWrap"] = 0;
             // print_r($this->conf['image.']);
@@ -394,7 +394,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $img = $this->conf["image."];
             $img["file"] = $filepath;
             $showImage = $this->cObj->IMAGE($img);
-                        
+
         }else{
             // Check images, the first image or pdf file will be displayed as thumbnail
             $images = explode(',', $image_row['image']);
@@ -414,7 +414,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                        $img = $this->conf["image."];
                        $img["file"] = $filepath;
                        $showImage = $this->cObj->cObjGetSingle('IMAGE', $img);
-                    
+
                        break;
                 }else{
                     // check fileext
@@ -424,7 +424,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                         $img = $this->conf["image."];
                         $img["file"] = $filepath;
                         $showImage = $this->cObj->cObjGetSingle('IMAGEIMAGEIMAGE', $img);
-                        
+
                         break;
                     }else{
                         $showImage = '';
@@ -438,7 +438,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         // print_r($showImage);
         if($this->config['imagelink']) {
             $markerArray['###IMAGE###'] = $this->generateImageLink($image_row, $showImage);
-        }else{                
+        }else{
             $markerArray['###IMAGE###'] = $showImage;
         }
 
@@ -454,7 +454,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }else{
             $markerArray['###MORE###'] = '';
         }
-        
+
         // overviewPID of the site
         // If no ID is set in TS it will chose the site itself
         if($this->conf["overviewPID"] == '') $this->conf["overviewPID"] = $GLOBALS["TSFE"]->id;
@@ -463,14 +463,14 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         if($this->linkTitle) {
             $markerArray['###TITLE###'] = $this->generateDownloadLinks($image_row, 1);
             $markerArray['###LINKS###'] = '';
-            
+
         }else{
             $markerArray['###TITLE###'] = $image_row['name'];
             $markerArray['###LINKS###'] = $this->generateDownloadLinks($image_row);
         }
         if($this->showrelated) {
             if(!empty($image_row['related'])) {
-            
+
                 // print_r($image_row['related']);
                 $relArray=explode(',', $image_row['related']);
                 // print_r($relArray);
@@ -484,7 +484,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 // print_r($link_uid);
                 $markerArray['###RELATED###']='';
             }
-            
+
         }else{
             $markerArray['###RELATED###']='';
         }
@@ -539,24 +539,24 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         return $markerArray;
     }
 
-    
+
     /**
      * Generates breadcrumb for category menu
      *
      * @param  int $cat: id of main category
      * @return The generated form
-     */        
+     */
     function breadcrumb($cat,$subcats="",$subcount="")
     {
         // print_r($subcount);
         $subcats = explode("_", $subcats);
-        if($subcount) {        
-            $lastsub = array_pop($subcats);        
+        if($subcount) {
+            $lastsub = array_pop($subcats);
         }
         // you are here
         $out = $this->pi_getLL('breadcrumb');
         // maincat
-        $res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('cat', 'tx_sbdownloader_cat', 'uid='.intval($cat).$this->getWhere('tx_sbdownloader_cat')); 
+        $res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('cat', 'tx_sbdownloader_cat', 'uid='.intval($cat).$this->getWhere('tx_sbdownloader_cat'));
         while($row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
             if(empty($subcats)) {
                 $out .= $row['cat'];
@@ -566,18 +566,18 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }
         // print_r($subcats);
         //subcats
-        if(!empty($subcats)) {    
+        if(!empty($subcats)) {
             // get subcats
             foreach($subcats as $value) {
-                $resSub=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,cat', 'tx_sbdownloader_cat', 'uid='.intval($value).$this->getWhere('tx_sbdownloader_cat')); 
+                $resSub=$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid,cat', 'tx_sbdownloader_cat', 'uid='.intval($value).$this->getWhere('tx_sbdownloader_cat'));
                 while($rowSub=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($resSub)){
                     if($value != $this->cat) {
                         $out .= ' > '.$this->pi_linkToPage($rowSub['cat'], $GLOBALS["TSFE"]->id, '', array('tx_sbdownloader_pi1[catid]' => $rowSub['uid'],'tx_sbdownloader_pi1[scat]' => $value));
-                    }else{                        
+                    }else{
                         $out .= ' > '.$rowSub['cat'];
-                    }                    
-                    
-                }                
+                    }
+
+                }
             }
         }
         return $out;
@@ -587,9 +587,9 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @param  string    $keyword: search word
      * @return The generated form
-     */    
+     */
     // function licenceAccepted($checklicence){
-    // if($checklicence) {        
+    // if($checklicence) {
     // $download = t3lib_div::_GP('download');
     // $did = intval(t3lib_div::_GP('did'));
     // $pid = $this->conf['licencePID'];
@@ -601,21 +601,21 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     // $markerArray['###DLHEADLINE###'] = $this->pi_getLL('dlheadline');
     // $content = $this->cObj->substituteMarkerArrayCached($this->template['template'], array(), $markerArray);
     // }
-    // return $content;        
+    // return $content;
     // }
-    
-    
+
+
     /**
      * Generates the search form
      *
      * @param  string    $keyword: search word
      * @return The generated form
-     */    
+     */
     // function getLicence($checklicence){
     // print_r($checklicence);
     // exit;
     // if(!$checklicence) {
-    // $this->pi_USER_INT_obj = 1;    
+    // $this->pi_USER_INT_obj = 1;
     // $download = t3lib_div::_GP('download');
     // $did = intval(t3lib_div::_GP('did'));
     // $pid = $this->conf['licenceAcceptedPID'];
@@ -625,17 +625,17 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     // print_r($link);
     // return $content;
     // exit;
-    // header("Location: $link");            
+    // header("Location: $link");
     // }else{
     // $download = t3lib_div::_GP('download');
     // $did = intval(t3lib_div::_GP('did'));
-    // $pid = $this->conf['licenceAcceptedPID'];            
-    // $pid = $GLOBALS["TSFE"]->id;            
-    // $this->template['template'] = $this->cObj->getSubpart($this->templateCode,'###TEMPLATE_LICENCE###');        
+    // $pid = $this->conf['licenceAcceptedPID'];
+    // $pid = $GLOBALS["TSFE"]->id;
+    // $this->template['template'] = $this->cObj->getSubpart($this->templateCode,'###TEMPLATE_LICENCE###');
     // print_r($download);
     // $markerArray['###HEADLINE###'] = $this->pi_getLL('licenceHeadline');
     // $markerArray['###SUBMIT###'] = $this->pi_getLL('accept');
-            
+
     // $this->pi_linkTP($strDLI, $urlParameters=array('download' => $val, 'did' => $uid));
     // $markerArray['###PID###'] = $this->pi_getPageLink($pid,'',$urlParameters=array('download' => $download, 'did' => $did, 'sid' => $pid));
     // $markerArray['###DID###'] = '<input type="hidden" value="'.$download.'" name="download">';
@@ -645,12 +645,12 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     // }
     // return $content;
     // }
-    
-    
+
+
     function getList($where=array(),$mode="")
-    {    
+    {
         // print_r($this->shortlink);
-    
+
         // show records of choosen cats
         if($this->config['cat']) {
             $cat = explode(",", $this->config['cat']);
@@ -659,13 +659,13 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             }
             $cats='('.implode(' OR ', $catvalue).')';
             if(empty($this->keyword)) {
-                $where[]=$cats;    
+                $where[]=$cats;
             }
             if(!empty($this->keyword) && !$this->showAll) {
-                $where[]=$cats;    
+                $where[]=$cats;
             }
         }
-        
+
         // set limit if mode "LATEST"
         if($mode=="LATEST") {
             $limit = $this->config['limit'];
@@ -673,17 +673,17 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 $where[]=$cats;
             }
         }
-        if($mode=="SHORTLINK" && empty($this->shortlink)) {    
+        if($mode=="SHORTLINK" && empty($this->shortlink)) {
             return $this->pi_getLL('norecords');
         }else{
             // Fetch downloads (mm)
             $res=$GLOBALS['TYPO3_DB']->exec_SELECT_mm_query('DISTINCT tx_sbdownloader_images.*', 'tx_sbdownloader_images', 'tx_sbdownloader_images_cat_mm', '', ($where ? ' AND '.implode(' AND ', $where) : '').$this->getWhere('tx_sbdownloader_images'), '', $this->config['orderby'].' '.$this->config['ascdesc'], $limit);
-            
+
             // $GLOBALS['TYPO3_DB']->store_lastBuiltQuery = 1;
-            // echo $GLOBALS['TYPO3_DB']->debug_lastBuiltQuery;     
-            if(!empty($this->keyword) && $mode!="LATEST") { 
-                $headline = '<h2>'.$this->pi_getLL('searchresult').'</h2>'; 
-                
+            // echo $GLOBALS['TYPO3_DB']->debug_lastBuiltQuery;
+            if(!empty($this->keyword) && $mode!="LATEST") {
+                $headline = '<h2>'.$this->pi_getLL('searchresult').'</h2>';
+
             }
             if($GLOBALS['TYPO3_DB']->sql_num_rows($res) == 0) {
                 if(!empty($this->keyword)) {
@@ -692,12 +692,12 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                     $noresult = $this->pi_getLL('norecords');
                 }
             }
-            while($image_row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){            
+            while($image_row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)){
                 $image_row=$this->getOverlay('tx_sbdownloader_images', $image_row);
                 // print_r($image_row);
                 if($image_row) {
                     $image_row=$this->getCategories($image_row);
-                    
+
                     $markerArray=$this->getMarkerArray($image_row, $this->cat_rows);
                     foreach($this->mHooks as $lHookObj) {
                         if (method_exists($lHookObj, 'additionalListItemMarker')) {
@@ -718,7 +718,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @param  string $keyword: search word
      * @return The generated form
-     */    
+     */
     function getSearch($keyword)
     {
         $markerArray['###HEADLINE###'] = $this->pi_getLL('searchHeadline');
@@ -741,10 +741,10 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @param  int $id: id of download
      * @return The generated item
-     */    
+     */
     function getSingle($id,$mode="")
     {
-    
+
         // print_r($id);
         // print_r($GLOBALS['TSFE']->fe_user->getKey('ses','did'));
         if($mode == 'SINGLEDOWNLOAD') {
@@ -755,9 +755,9 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         // $where = 'uid='.intval($id);
         // }else{
         $where = 'uid='.intval($id);
-        // }    
+        // }
         // Fetch download
-        $res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_sbdownloader_images', $where.$this->getWhere('tx_sbdownloader_images')); 
+        $res=$GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tx_sbdownloader_images', $where.$this->getWhere('tx_sbdownloader_images'));
         if($image_row=$GLOBALS['TYPO3_DB']->sql_fetch_assoc($res)) {
             $image_row=$this->getOverlay('tx_sbdownloader_images', $image_row);
 
@@ -795,12 +795,12 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         return $image_row;
     }
 
-    
+
     function getWhere($table)
     {
         // Enable fields
         // print_r($this->conf);
-        $where=$this->cObj->enableFields($table);    
+        $where=$this->cObj->enableFields($table);
         // Translation if no single_id
         if($this->conf['view'] == 'SINGLE_ID') {
             return false;
@@ -812,13 +812,13 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 $where.=' OR ('.$table.'.'.$ctrl['languageField'].'='.intval($GLOBALS['TSFE']->sys_language_content).' AND '.$table.'.'.$ctrl['transOrigPointerField'].'=0)';
             }
             $where.=')';
-        
+
             // Version
-            $where.=' AND '.$table.'.pid>=0';    
+            $where.=' AND '.$table.'.pid>=0';
             return $where;
         }
     }
-    
+
     /**
      * Get language overlay
      *
@@ -851,8 +851,8 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }
         return $row;
     }
-    
-    
+
+
     /**
      * Generates the download links
      *
@@ -864,10 +864,10 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      * @return The generated links
      */
     function generateDownloadLinks($row,$linkTitle="0")
-    {    
-    
+    {
+
         // print_r($row);
-        // get correct language uid for translated realurl link        
+        // get correct language uid for translated realurl link
         $link_uid = ($row['_LOCALIZED_UID']) ? $row['_LOCALIZED_UID'] : $row['uid'];
         // Template settings
         $templateflex_file = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'template_file', 's_template');
@@ -883,7 +883,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         if(!empty($row['image'])) {
             // explode images
             $images = explode(',', $row['image']);
-            
+
             foreach ($images as $val) {
                 // break loop if only first record should be displayed
                 if($this->config['onlyFirst'] && $i == 1) break;
@@ -913,7 +913,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     function generateImageLink($row,$filepath)
     {
         $i = 0;
-        // get correct language uid for translated realurl link        
+        // get correct language uid for translated realurl link
         $link_uid = ($row['_LOCALIZED_UID']) ? $row['_LOCALIZED_UID'] : $row['uid'];
         if(!empty($row['image'])) {
             // explode images
@@ -923,8 +923,8 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 if($i == 1) break;
                 $markerArray=$this->generateDownloadLink($link_uid, $val, $description[$i], $linkdescription[$i], 0, $filepath, $row['name'], $row['tstamp'], $i);
                 $i++;
-            } //foreach ($images as $val) {            
-        }    
+            } //foreach ($images as $val) {
+        }
         if(!empty($row['externallinks'])) {
             // External links
             $external = explode(',', $row['externallinks']);
@@ -933,11 +933,11 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 $markerArray=$this->generateDownloadLink($link_uid, $val, $description[$i], $linkdescription[$i], $key+1, $filepath, $row['name'], $row['tstamp'], $i);
                 $i++;
             }
-        }                
+        }
         // print_r($markerArray);
         return $markerArray;
     }
-    
+
     function generateDownloadLink($uid,$val,$description,$linkdescription,$external=false,$img="",$name,$crdate="",$i="")
     {
         // print_r($external);
@@ -949,9 +949,9 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $markerArray['###LASTEDIT###'] = '';
         $fileinfo = \TYPO3\CMS\Core\Utility\GeneralUtility::split_fileref($val);
 
-        
+
         // print_r($description);
-        
+
         // read out link descriptions
         if(!empty($linkdescription)) {
             $markerArray['###LINKDESCRIPTION###'] = trim($this->getTypoLink($linkdescription));
@@ -1003,10 +1003,10 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 // now we take the corresponding GIFs for the different file-extensions,
                 // normally in folder "typo3/gfx/fileicons/"
                 // if file icon exist
-                if(file_exists($this->conf["downloadIcon"].trim($fileinfo['fileext'].'.gif'))) {                    
+                if(file_exists($this->conf["downloadIcon"].trim($fileinfo['fileext'].'.gif'))) {
                     $strDLI = '<img src="'.$this->conf["downloadIcon"].trim($fileinfo['fileext']).'.gif" width="18" height="16">';
                 }elseif(file_exists('typo3/gfx/fileicons/'.trim($fileinfo['fileext'].'.gif'))) {
-                    $strDLI = '<img src="typo3/gfx/fileicons/'.trim($fileinfo['fileext']).'.gif" width="18" height="16">';                
+                    $strDLI = '<img src="typo3/gfx/fileicons/'.trim($fileinfo['fileext']).'.gif" width="18" height="16">';
                 }else{
                     $strDLI = '<img src="'.$this->conf["missingDownloadIcon"].'">';
                 }
@@ -1019,18 +1019,18 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 $addPid = $this->licencePID;
             }else{
                 $addPid = '';
-            }            
+            }
             // print_r($this->licencePID);
             // print_r($this->licence);
-            //secureDownloads                        
+            //secureDownloads
             if($this->config['secureDownloads']) {
                 $icon = $this->pi_linkTP($strDLI, $urlParameters = array('download' => $i, 'did' => $uid), '', $addPid);
                 $markerArray['###ICON###'] = $this->cObj->addParams($icon, $params);
             }else{
                 if(!$external) {
-                    $file=$this->filebasepath.$val;                
+                    $file=$this->filebasepath.$val;
                 }else{
-                    $file=$val;                
+                    $file=$val;
                 }
                 $markerArray['###ICON###'] = $this->pi_linkToPage($strDLI, $file, $this->conf['linkTarget']);
             }
@@ -1051,14 +1051,14 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         if($this->config['secureDownloads'] && !$external) {
             // if($this->config['secureDownloads']){
             $temp_conf["additionalParams"] .= '&no_cache=1&download='.($external ? $external : $i).'&did='.$uid;
-            $temp_conf["addQueryString"] = true;                                          
+            $temp_conf["addQueryString"] = true;
             $temp_conf["useCacheHash"] = false;
         }else{
             unset($temp_conf['parameter.']);
             $temp_conf['parameter']=($external ? '' : $this->filebasepath).$val;
         }
         $link = $this->local_cObj->typolink($fileName, $temp_conf);
-        
+
         $markerArray['###LINK###'] = $this->cObj->addParams($link, $params);
 
         // filesize
@@ -1078,18 +1078,18 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $mdsc = trim($this->conf['fileMDateClass']);
             $markerArray['###MODIFICATIONDATE###'] = $this->pi_getLL('fileDate').$strFilemtime;
         }
-        
-        if(!empty($img)) {            
-            if($this->config['secureDownloads']) {            
+
+        if(!empty($img)) {
+            if($this->config['secureDownloads']) {
                 // print_r($addPid);
                 $imglink = $this->pi_linkTP($img, $urlParameters = array('download' => $i, 'did' => $uid, 'sid'=>$GLOBALS["TSFE"]->id), '', $addPid);
                 $imagelink = $this->cObj->addParams($imglink, $params);
             }else{
-                $file=$this->filebasepath.$val;                
+                $file=$this->filebasepath.$val;
                 $imagelink = $this->pi_linkToPage($img, $file, $this->conf['linkTarget']);
             }
             return $imagelink;
-        }else{        
+        }else{
             return $markerArray;
         }
     }
@@ -1140,7 +1140,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         }
         if($id>0) $check=0;
         // if user logged in or no login necessary
-        if ($check == 0) {            
+        if ($check == 0) {
             // update counter
             $GLOBALS['TYPO3_DB']->exec_UPDATEquery(
                 'tx_sbdownloader_images',
@@ -1149,12 +1149,12 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 'clicks' => 'clicks+1',
                 ),
                 array('clicks')
-            );        
+            );
             $downloadarray = array('did'=>$uid, 'dtitle'=>$image);
             ob_start();
             // Here a hook for stats collection
             // Methode to implement in hook object
-            // $lHook->saveStats($uid, tx_sbdownloader_pi1 &$pPiRef);           
+            // $lHook->saveStats($uid, tx_sbdownloader_pi1 &$pPiRef);
             foreach($this->mHooks as $lHookObj) {
                 if (method_exists($lHookObj, 'saveStats')) {
                     $lHookObj->saveStats($this, $downloadarray);
@@ -1181,9 +1181,9 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                   $mimetype = $this->checkMimeType($downloadfile);
                   header("Content-Type: $mimetype");
                   header("Content-Disposition: attachment; filename=$filename");
-                  header("Content-Length: $filesize");            
+                  header("Content-Length: $filesize");
                   // readfile($downloadfile);
-                  $this->readfile_chunked($downloadfile);            
+                  $this->readfile_chunked($downloadfile);
                   ob_start();
                   // Here a hook for additional Smarty Vars
                   // Methode to implement in hook object
@@ -1198,13 +1198,13 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             }
             // login / registration page
         }else{
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'download', $image); 
-            $GLOBALS['TSFE']->fe_user->setKey('ses', 'did', $uid); 
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'download', $image);
+            $GLOBALS['TSFE']->fe_user->setKey('ses', 'did', $uid);
             $GLOBALS["TSFE"]->storeSessionData();
             $link = $this->pi_getPageLink($this->loginpage, '', $vars);
-            $link = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($link); 
-            header('Location: '.$link); 
-            exit();            
+            $link = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($link);
+            header('Location: '.$link);
+            exit();
         }
     } // function downloadImage
 
@@ -1216,7 +1216,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         // print_r($GLOBALS ['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]);
         if (is_array($GLOBALS ['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey])) {
             foreach ($GLOBALS ['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['hook'] as $classRef) {
-                $this->mHooks[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);        
+                $this->mHooks[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);
             }
         }
     }// function initHooks
@@ -1226,8 +1226,8 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
      *
      * @param string        $str: string to be parsed
      */
-     
-     
+
+
     // Fuktion readfile_chunked();
     function readfile_chunked($filename)
     {
@@ -1244,7 +1244,7 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             flush();
         }
         return fclose($handle);
-    }     
+    }
 
     function getTypoLink($str)
     {
@@ -1253,15 +1253,15 @@ class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $parseFunc['nonTypoTagStdWrap.']['encapsLines.']['removeWrapping'] = 1;
         // remove &nbsp;
         $parseFunc['nonTypoTagStdWrap.']['encapsLines.']['innerStdWrap_all.']['ifBlank'] = '';
-        $out = $this->cObj->parseFunc($str, $parseFunc);  
-        return $out;    
+        $out = $this->cObj->parseFunc($str, $parseFunc);
+        return $out;
     }
 
 } // class end
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sb_downloader/pi1/class.tx_sbdownloader_pi1.php']) {
-    include_once $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sb_downloader/pi1/class.tx_sbdownloader_pi1.php'];
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sb_downloader/Classes/class.tx_sbdownloader_pi1.php']) {
+    include_once $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sb_downloader/Classes/class.tx_sbdownloader_pi1.php'];
 }
 
 ?>

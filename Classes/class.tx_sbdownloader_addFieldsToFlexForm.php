@@ -33,7 +33,7 @@ class tx_sbdownloader_addFieldsToFlexForm
      */
     function getStorageFolderPid()
     {
-        // global $_GET;     
+        // global $_GET;
         $positionPid = \TYPO3\CMS\Core\Utility\GeneralUtility::htmlspecialchars_decode(\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('id'));
         // $pid = t3lib_div::_GP('id');
         // print_r($pid);
@@ -69,7 +69,7 @@ class tx_sbdownloader_addFieldsToFlexForm
         }
 
         $optionList = array();
-        // exec_SELECTquery 
+        // exec_SELECTquery
         // $res = $GLOBALS['TYPO3_DB']->sql(TYPO3_db, "SELECT uid,cat FROM tx_sbdownloader_cat WHERE hidden=0 AND deleted=0 $sql");
         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery("uid,cat", "tx_sbdownloader_cat", "hidden=0 AND deleted=0 $sql");
 
@@ -86,8 +86,8 @@ class tx_sbdownloader_addFieldsToFlexForm
         return $config;
     }
 }
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sb_downloader/pi1/class.tx_sbdownloader_addFieldsToFlexForm.php']) {
-    include_once $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sb_downloader/pi1/class.tx_sbdownloader_addFieldsToFlexForm.php'];
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sb_downloader/Classes/class.tx_sbdownloader_addFieldsToFlexForm.php']) {
+    include_once $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/sb_downloader/Classes/class.tx_sbdownloader_addFieldsToFlexForm.php'];
 }
 
 
