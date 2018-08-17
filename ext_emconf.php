@@ -11,29 +11,29 @@
  ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = array (
-	'title' => 'Download system',
-	'description' => 'Download system for all kind of files with optional click counter, short description and detail view. Configuration via flexforms and HTML template.',
-	'category' => 'plugin',
-	'version' => '3.0.0',
-	'state' => 'stable',
-	'uploadfolder' => false,
-	'createDirs' => '',
-	'clearcacheonload' => true,
-	'author' => 'Sebastian Baumann',
-	'author_email' => 'sb@typo3erweiterungen.de',
-	'author_company' => '',
-	'constraints' => 
-	array (
-		'depends' => 
-		array (
-			'typo3' => '4.6.0-8.7.99',
-		),
-		'conflicts' => 
-		array (
-		),
-		'suggests' => 
-		array (
-		),
-	),
+    'title' => 'Download system',
+    'description' => 'Download system for all kind of files with optional click counter, short description and detail view. Configuration via flexforms and HTML template.',
+    'category' => 'plugin',
+    'version' => '3.0.0',
+    'state' => 'stable',
+    'uploadfolder' => false,
+    'createDirs' => '',
+    'clearcacheonload' => true,
+    'author' => 'Sebastian Baumann',
+    'author_email' => 'sb@typo3erweiterungen.de',
+    'author_company' => '',
+    'constraints' => 
+    array (
+        'depends' => 
+        array (
+            'typo3' => '4.6.0-8.7.99',
+        ),
+        'conflicts' => 
+        array (
+        ),
+        'suggests' => 
+        array (
+        ),
+    ),
 );
 

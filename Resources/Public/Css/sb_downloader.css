@@ -7,10 +7,10 @@
 }
 
 .sb_download_flex_cat {
-	float: left;
-	margin-bottom: 20px;
-	height: 40px;
-	padding-right: 10px;
+    float: left;
+    margin-bottom: 20px;
+    height: 40px;
+    padding-right: 10px;
 }
 
 .sb_download_flex {
@@ -30,23 +30,23 @@
 }
 
 .sb_download_singleflex .title{
-	float: left;
-	width: 445px;
-	font-weight: bold;
+    float: left;
+    width: 445px;
+    font-weight: bold;
 }
 .sb_download_singleflex .links{
-	float: right;
-	width: 150px;
-	border: 0px;
+    float: right;
+    width: 150px;
+    border: 0px;
 }
 .sb_download_text {
-	float: right;
-	text-align: left;
-	width: 160px;
+    float: right;
+    text-align: left;
+    width: 160px;
 }
 .sb_download_image {
-	float: left;
-	text-align: left;
+    float: left;
+    text-align: left;
 }
 .sb_download_flex p.bodytext,
 .sb_download_single p.bodytext {
@@ -65,13 +65,13 @@
 }
 .sb_download_flex .clicks,
 .sb_download_single .clicks {
-	font-size: 11px;
+    font-size: 11px;
 }
 
 .sb_download_flex .datetime,
 .sb_download_single .datetime {
-	font-size: 10px;
-	float: right;
+    font-size: 10px;
+    float: right;
 }
 .sb_download_flex .title,
 .sb_download_single .title {
@@ -106,17 +106,17 @@
   text-decoration: none;
 }
 .sb_download_single {
-	float: left;
-	padding: 0px;
-	margin: 0px;
+    float: left;
+    padding: 0px;
+    margin: 0px;
 }
 .sb_download_single .sb_download_text {
-	width: 450px;
+    width: 450px;
 }
 .sb_download_flex .category,
 .sb_download_single .category {
-	float: left;
-	font-weight: bold;
-	font-size: 11px;
-	margin: 0 0 15px 0;
+    float: left;
+    font-weight: bold;
+    font-size: 11px;
+    margin: 0 0 15px 0;
 }
