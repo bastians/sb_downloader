@@ -1,0 +1,12 @@
+{
+  "name": "sb_downloader",
+  "description": "Download system for all kind of files with optional click counter, short description and detail view. Configuration via flexforms and HTML template.",
+  "license": "",
+  "homepage": "https://extensions.typo3.org/extension/sb_downloader/",
+  "scripts": {
+      "cs": "phpcs *.php"
+  },
+  "require": {
+      "squizlabs/php_codesniffer": "2.*"
+  }
+}
