@@ -33,23 +33,23 @@ class tx_sbdownloader_addFieldsToFlexForm{
 */
 function getStorageFolderPid() {
 	// global $_GET; 	
-	$positionPid = t3lib_div::htmlspecialchars_decode(t3lib_div::_GET('id'));
+	$positionPid = \TYPO3\CMS\Core\Utility\GeneralUtility::htmlspecialchars_decode(\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('id'));
 	// $pid = t3lib_div::_GP('id');
 	// print_r($pid);
 	if(empty($positionPid)){
-		$siteid = t3lib_div::_GET('returnUrl');
-		$siteid = t3lib_div::explodeUrl2Array($siteid);
+		$siteid = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('returnUrl');
+		$siteid = \TYPO3\CMS\Core\Utility\GeneralUtility::explodeUrl2Array($siteid);
 		$siteid = $siteid['db_list.php?id'];
 		$positionPid = $siteid;
 	}
 	// print_r($positionPid);
 	// Negative PID values is pointing to a page on the same level as the current.
 	if ($positionPid<0) {
-	$pidRow = t3lib_BEfunc::getRecord('pages',abs($positionPid),'pid');
+	$pidRow = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('pages',abs($positionPid),'pid');
 	$positionPid = $pidRow['pid'];
 	}
-	$row = t3lib_BEfunc::getRecord('pages',$positionPid);
-	$TSconfig = t3lib_BEfunc::getTCEFORM_TSconfig('pages',$row);
+	$row = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('pages',$positionPid);
+	$TSconfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getTCEFORM_TSconfig('pages',$row);
 	return intval($TSconfig['_STORAGE_PID']);
 	}
 

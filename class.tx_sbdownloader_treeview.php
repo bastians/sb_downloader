@@ -53,12 +53,12 @@
  */
 
 
-if (!class_exists('t3lib_treeview')) require_once(PATH_tslib . 'class.t3lib_treeview.php');
+//if (!class_exists('t3lib_treeview')) require_once(PATH_tslib . 'class.t3lib_treeview.php');
 	/**
 	 * extend class t3lib_treeview to change function wrapTitle().
 	 *
 	 */
-class tx_sbdownloader_tceFunc_selectTreeView extends t3lib_treeview {
+class tx_sbdownloader_tceFunc_selectTreeView extends \TYPO3\CMS\Backend\Tree\View\AbstractTreeView {
 
 	var $TCEforms_itemFormElName='';
 	var $TCEforms_nonSelectableItemsArray=array();
@@ -69,9 +69,10 @@ class tx_sbdownloader_tceFunc_selectTreeView extends t3lib_treeview {
 	 *
 	 * @param	string		$title: the title
 	 * @param	array		$v: an array with uid and title of the current item.
+	 * @param int $bank Bank pointer (which mount point number)
 	 * @return	string		the wrapped title
 	 */
-	function wrapTitle($title,$v)	{
+	public function wrapTitle($title,$v,$bank = 0)	{
 		if($v['uid']>0) {
 			if (in_array($v['uid'],$this->TCEforms_nonSelectableItemsArray)) {
 				return '<a href="#" title="'.$v['cat'].'"><span style="color:#999;cursor:default;">'.$v['cat'].'</span></a>';
@@ -147,7 +148,7 @@ class tx_sbdownloader_tceFunc_selectTreeView extends t3lib_treeview {
 			$this->orig_ids_hierarchy[$depth][] = $row['_ORIG_uid'] ? $row['_ORIG_uid'] : $row['uid'];
 
 				// Make a recursive call to the next level
-			$HTML_depthData = $depthData . ' <img' . t3lib_iconWorks::skinImg($this->backPath, 'gfx/ol/' . $LN . '.gif', 'width="18" height="16"') . ' alt="" />';
+			$HTML_depthData = $depthData . ' <img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->backPath, 'gfx/ol/' . $LN . '.gif', 'width="18" height="16"') . ' alt="" />';
 			if ($depth > 1 && $this->expandNext($newID) && !$row['php_tree_stop']) {
 				$nextCount = $this->getTree(
 					$newID,
@@ -220,7 +221,7 @@ class tx_sbdownloader_tceFunc_selectTreeView extends t3lib_treeview {
 							implode(',',$this->fieldArray),
 							$this->table.','.$this->table_MM, 'tx_sbdownloader_cat.uid = ' .$this->table_MM.'.uid_local AND ' .$this->table_MM.'.uid_foreign = '.$parentId.
 								' AND l18n_parent=0 '.
-								t3lib_BEfunc::deleteClause($this->table).
+								\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($this->table).
 								$this->clause,	// whereClauseMightContainGroupOrderBy
 							'',
 							$this->orderByFields
@@ -229,7 +230,7 @@ class tx_sbdownloader_tceFunc_selectTreeView extends t3lib_treeview {
 				$restemp = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT '.
 							implode(',',$this->fieldArray),
 							$this->table.','.$this->table_MM, 'tx_sbdownloader_cat.uid = ' .$this->table_MM.'.uid_local'.' AND l18n_parent=0'.
-								t3lib_BEfunc::deleteClause($this->table).
+								\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($this->table).
 								$this->clause,	// whereClauseMightContainGroupOrderBy
 							'',
 							$this->orderByFields
@@ -244,7 +245,7 @@ class tx_sbdownloader_tceFunc_selectTreeView extends t3lib_treeview {
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT '.
 								implode(',',$this->fieldArray),
 								$this->table, 'tx_sbdownloader_cat.uid not in ('.implode(",",$tempa).') '.' AND l18n_parent=0  AND parent_cat=0'.
-									t3lib_BEfunc::deleteClause($this->table).
+									\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($this->table).
 									$this->clause,	// whereClauseMightContainGroupOrderBy
 								'',
 								$this->orderByFields
@@ -253,7 +254,7 @@ class tx_sbdownloader_tceFunc_selectTreeView extends t3lib_treeview {
 					$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('DISTINCT '.
 								implode(',',$this->fieldArray),
 								$this->table, 'l18n_parent=0 AND parent_cat=0'.
-									t3lib_BEfunc::deleteClause($this->table).
+									\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause($this->table).
 									$this->clause,	// whereClauseMightContainGroupOrderBy
 								'',
 								$this->orderByFields
@@ -285,8 +286,8 @@ class tx_sbdownloader_treeview {
 	 */
 	function displayHierarchyTree($PA, $fobj)    {
 		
-		// print_r($PA['itemFormElValue']);
-		// exit;
+		
+		 
 		
 		// check if $PA['itemFormElValue'] empty
 		// if(empty($PA['itemFormElValue'])){
@@ -304,14 +305,16 @@ class tx_sbdownloader_treeview {
 				
 			// it seems TCE has a bug and do not work correctly with '1'
 		$config['maxitems'] = ($config['maxitems']==2) ? 1 : $config['maxitems'];
+		
 
 			// Getting the selector box items from the system
-		$selItems = $this->pObj->addSelectOptionsToItemArray($this->pObj->initItemArray($PA['fieldConf']),$PA['fieldConf'],$this->pObj->setTSconfig($table,$row),$field);
-		$selItems = $this->pObj->addItems($selItems,$PA['fieldTSConfig']['addItems.']);
-		#if ($config['itemsProcFunc']) $selItems = $this->pObj->procItems($selItems,$PA['fieldTSConfig']['itemsProcFunc.'],$config,$table,$row,$field);
-
+		///$selItems = $this->pObj->addSelectOptionsToItemArray($this->pObj->initItemArray($PA['fieldConf']),$PA['fieldConf'],$this->pObj->setTSconfig($table,$row),$field);
+		//$selItems = $this->pObj->addItems($selItems,$PA['fieldTSConfig']['addItems.']);
+		if ($config['itemsProcFunc']) 
+			$selItems = $this->pObj->procItems($selItems,$PA['fieldTSConfig']['itemsProcFunc.'],$config,$table,$row,$field);
+ 
 			// Possibly remove some items:
-		$removeItems=t3lib_div::trimExplode(',',$PA['fieldTSConfig']['removeItems'],1);
+		$removeItems=\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',',$PA['fieldTSConfig']['removeItems'],1);
 		foreach($selItems as $tk => $p)	{
 			if (in_array($p[1],$removeItems))	{
 				unset($selItems[$tk]);
@@ -321,7 +324,7 @@ class tx_sbdownloader_treeview {
 
 				// Removing doktypes with no access:
 			if ($table.'.'.$field == 'pages.doktype')	{
-				if (!($GLOBALS['BE_USER']->isAdmin() || t3lib_div::inList($GLOBALS['BE_USER']->groupData['pagetypes_select'],$p[1])))	{
+				if (!($GLOBALS['BE_USER']->isAdmin() || \TYPO3\CMS\Core\Utility\GeneralUtility::inList($GLOBALS['BE_USER']->groupData['pagetypes_select'],$p[1])))	{
 					unset($selItems[$tk]);
 				}
 			}
@@ -349,7 +352,7 @@ class tx_sbdownloader_treeview {
 					// $storagePid = $TSconfig['_STORAGE_PID']?$TSconfig['_STORAGE_PID']:0;
 					
 					// check if record storage pid exists
-					$TSconfig = t3lib_BEfunc::getTCEFORM_TSconfig($table,$row);					
+					$TSconfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getTCEFORM_TSconfig($table,$row);					
 					if(!empty($TSconfig['_THIS_ROW']['pages'])){
 						$sPid = $TSconfig['_THIS_ROW']['pages'];
 						$sPids=explode(",",$sPid);
@@ -417,14 +420,14 @@ class tx_sbdownloader_treeview {
 				// if(t3lib_div::compat_version('4.5')) {
 					// $maxitems = t3lib_div::intInRange($config['maxitems'], 0);  					
 				// }else{
-					$maxitems = t3lib_utility_Math::forceIntegerInRange($config['maxitems'], 0);  					
+					$maxitems = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($config['maxitems'], 0);  					
 				// }
 				if (!$maxitems)	$maxitems=100000;
 				// $minitems = t3lib_utility_Math::forceIntegerInRange($config['minitems'], 0);  
 				// if(t3lib_div::compat_version('4.5')) {
 					// $minitems = t3lib_div::intInRange($config['minitems'], 0);  					
 				// }else{
-					$minitems = t3lib_utility_Math::forceIntegerInRange($config['minitems'], 0);  					
+					$minitems = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($config['minitems'], 0);  					
 				// }				
 
 					// Register the required number of elements:
@@ -441,7 +444,7 @@ class tx_sbdownloader_treeview {
 					// if ($confArr['useStoragePid']) {
 
 					// check if record storage pid exists
-					$TSconfig = t3lib_BEfunc::getTCEFORM_TSconfig($table,$row);					
+					$TSconfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getTCEFORM_TSconfig($table,$row);					
 					if(!empty($TSconfig['_THIS_ROW']['pages'])){
 						$sPid = $TSconfig['_THIS_ROW']['pages'];
 						$sPids=explode(",",$sPid);
@@ -464,9 +467,9 @@ class tx_sbdownloader_treeview {
 //						$notAllowedItems = $this->getNotAllowedItems($PA,$SPaddWhere);
 //					}
 
-					if($config['treeViewClass'] AND is_object($treeViewObj = &t3lib_div::getUserObj($config['treeViewClass'],'user_',false))){
+					if($config['treeViewClass'] AND is_object($treeViewObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($config['treeViewClass'],'user_',false))){
 					} else {
-						$treeViewObj = t3lib_div::makeInstance('tx_sbdownloader_tceFunc_selectTreeView');
+						$treeViewObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_sbdownloader_tceFunc_selectTreeView');
 					}
 					$treeViewObj->table = $config['foreign_table'];
 					$treeViewObj->table_MM = $config['table_MM'];
@@ -528,13 +531,13 @@ class tx_sbdownloader_treeview {
 					// width of backend field
 					$width = 650; // default width for the field with the unit tree
 					if (intval($confArr['unitTreeWidth'])) { // if a value is set in extConf take this one.
-						$width = t3lib_utility_Math::forceIntegerInRange($confArr['unitTreeWidth'],1,600);
+						$width = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($confArr['unitTreeWidth'],1,600);
 					} elseif ($GLOBALS['CLIENT']['BROWSER']=='msie') { // to suppress the unneeded horizontal scrollbar IE needs a width of at least 320px
 						$width = 720;
 					}
 
-					$config['autoSizeMax'] = t3lib_utility_Math::forceIntegerInRange($config['autoSizeMax'],0);
-					$height = $config['autoSizeMax'] ? t3lib_utility_Math::forceIntegerInRange($treeItemC+2,t3lib_utility_Math::forceIntegerInRange($size,1),$config['autoSizeMax']) : $size;
+					$config['autoSizeMax'] = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($config['autoSizeMax'],0);
+					$height = $config['autoSizeMax'] ? \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($treeItemC+2,\TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($size,1),$config['autoSizeMax']) : $size;
 						// hardcoded: 16 is the height of the icons
 					$height=$height*16;
 
@@ -549,7 +552,7 @@ class tx_sbdownloader_treeview {
 
 						// Put together the select form with selected elements:
 					$selector_itemListStyle = isset($config['itemListStyle']) ? ' style="'.htmlspecialchars($config['itemListStyle']).'"' : ' style="'.$this->pObj->defaultMultipleSelectorStyle.'"';
-					$size = $config['autoSizeMax'] ? t3lib_utility_Math::forceIntegerInRange(count($itemArray)+1,t3lib_utility_Math::forceIntegerInRange($size,1),$config['autoSizeMax']) : $size;
+					$size = $config['autoSizeMax'] ? \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange(count($itemArray)+1,\TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($size,1),$config['autoSizeMax']) : $size;
 					$thumbnails = '<select style="width:150px;" name="'.$PA['itemFormElName'].'_sel"'.$this->pObj->insertDefStyle('select').($size?' size="'.$size.'"':'').' onchange="'.htmlspecialchars($sOnChange).'"'.$PA['onFocus'].$selector_itemListStyle.'>';
 					#$thumbnails = '<select                       name="'.$PA['itemFormElName'].'_sel"'.$this->pObj->insertDefStyle('select').($size?' size="'.$size.'"':'').' onchange="'.htmlspecialchars($sOnChange).'"'.$PA['onFocus'].$selector_itemListStyle.'>';
 					foreach($selItems as $p)	{
@@ -560,7 +563,7 @@ class tx_sbdownloader_treeview {
 				}
 
 				// Perform modification of the selected items array:
-				$itemArray = t3lib_div::trimExplode(',',$PA['itemFormElValue'],1);
+				$itemArray = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',',$PA['itemFormElValue'],1);
 				// print_r($PA['itemFormElValue']);
 				// print_r($itemArray);
 				// exit;
@@ -578,11 +581,11 @@ class tx_sbdownloader_treeview {
 				}
 				$sWidth = 200; // default width for the left field of the unit select
 				if (intval($confArr['unitSelectedWidth'])) {
-					$sWidth = t3lib_utility_Math::forceIntegerInRange($confArr['unitSelectedWidth'],1,600);
+					$sWidth = \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($confArr['unitSelectedWidth'],1,600);
 				}
 				$params=array(
 					'size' => $size,
-					'autoSizeMax' => t3lib_utility_Math::forceIntegerInRange($config['autoSizeMax'],0),
+					'autoSizeMax' => \TYPO3\CMS\Core\Utility\MathUtility::forceIntegerInRange($config['autoSizeMax'],0),
 					#'style' => isset($config['selectedListStyle']) ? ' style="'.htmlspecialchars($config['selectedListStyle']).'"' : ' style="'.$this->pObj->defaultMultipleSelectorStyle.'"',
 					'style' => ' style="width:'.$sWidth.'px;"',
 					'dontShowMoveIcons' => ($maxitems<=1),
@@ -650,7 +653,7 @@ class tx_sbdownloader_treeview {
 				$notAllowedCats = array();
 				foreach ($catvals as $k) {
 					$c = explode('|',$k);
-					if($c[0] && !t3lib_div::inList($allowedItemsList,$c[0])) {
+					if($c[0] && !\TYPO3\CMS\Core\Utility\GeneralUtility::inList($allowedItemsList,$c[0])) {
 						$notAllowedCats[]= '<p style="padding:0px;color:red;font-weight:bold;">- '.$c[1].' <span class="typo3-dimmed"><em>['.$c[0].']</em></span></p>';
 					}
 				}
@@ -676,7 +679,7 @@ class tx_sbdownloader_treeview {
 	function findRecursiveUnits ($PA,$row,$table,$storagePid,$treeIds) {
 		$errorMsg = array();
 		if ($table == 'tt_content' && $row['CType']=='list' && $row['list_type']==9) { // = tt_content element which inserts plugin sb_downloader
-			$cfgArr = t3lib_div::xml2array($row['pi_flexform']);
+			$cfgArr = \TYPO3\CMS\Core\Utility\GeneralUtility::xml2array($row['pi_flexform']);
 			if (is_array($cfgArr) && is_array($cfgArr['data']['sDEF']['lDEF']) && $cfgArr['data']['sDEF']['lDEF']['dynField']) {
 				$rcList = $this->compareCategoryVals ($treeIds,$cfgArr['data']['sDEF']['lDEF']['dynField']['vDEF']);
 			}
@@ -720,7 +723,7 @@ class tx_sbdownloader_treeview {
 		$catvals = explode(',',$unitString); // units of the current record (left field)
 		foreach ($catvals as $k) {
 			$c = explode('|',$k);
-			if(!t3lib_div::inList($showncats,$c[0])) {
+			if(!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($showncats,$c[0])) {
 				$recursiveCategories[]=$c;
 			}
 		}

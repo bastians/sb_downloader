@@ -14,7 +14,7 @@ $EM_CONF[$_EXTKEY] = array (
 	'title' => 'Download system',
 	'description' => 'Download system for all kind of files with optional click counter, short description and detail view. Configuration via flexforms and HTML template.',
 	'category' => 'plugin',
-	'version' => '2.5.2',
+	'version' => '3.0.0',
 	'state' => 'stable',
 	'uploadfolder' => false,
 	'createDirs' => '',
@@ -26,7 +26,7 @@ $EM_CONF[$_EXTKEY] = array (
 	array (
 		'depends' => 
 		array (
-			'typo3' => '4.6.0-6.2.99',
+			'typo3' => '4.6.0-8.7.99',
 		),
 		'conflicts' => 
 		array (

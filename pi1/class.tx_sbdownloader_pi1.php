@@ -26,7 +26,7 @@
 // }else{
 	// require_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('frontend') . 'Classes/Plugin/AbstractPlugin.php';
 // }
-if (!class_exists('tslib_pibase')) require_once(PATH_tslib . 'class.tslib_pibase.php');
+//if (!class_exists('tslib_pibase')) require_once(PATH_tslib . 'class.tslib_pibase.php');
 
 
 /**
@@ -38,7 +38,7 @@ if (!class_exists('tslib_pibase')) require_once(PATH_tslib . 'class.tslib_pibase
  * @package	TYPO3
  * @subpackage	tx_sbdownloader
  */
-class tx_sbdownloader_pi1 extends tslib_pibase {
+class tx_sbdownloader_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	var $prefixId      = 'tx_sbdownloader_pi1';		// Same as class name
 	var $scriptRelPath = 'pi1/class.tx_sbdownloader_pi1.php';	// Path to this script relative to the extension dir.
 	var $extKey        = 'sb_downloader';	// The extension key.
@@ -66,7 +66,7 @@ class tx_sbdownloader_pi1 extends tslib_pibase {
 		$this->pi_loadLL();
 			
 	   // Preconfigure the typolink
-		$this->local_cObj = t3lib_div::makeInstance("tslib_cObj");
+		$this->local_cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance("TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer");
 		$this->local_cObj->setCurrentVal($GLOBALS["TSFE"]->id);
 		$this->typolink_conf = $this->conf["typolink."];
 		$this->typolink_conf["parameter."]["current"] = 1;
@@ -80,16 +80,16 @@ class tx_sbdownloader_pi1 extends tslib_pibase {
 		$this->lang = $GLOBALS['TSFE']->config['config']['sys_language_uid'] ;
 				
 		// take objects from dedicated page or sysfolder
-		$this->download = t3lib_div::_GP('download');
-		$this->did = intval(t3lib_div::_GP('did'));
+		$this->download = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('download');
+		$this->did = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('did'));
 		$this->pid = intval($this->piVars['uid']);
 		$this->keyword = trim($this->piVars['sword']);
 		$this->licenceAccepted = intval($this->piVars['licence']);
 		$this->cat = intval($this->piVars['catid']);
 		$this->subcats=$this->piVars['scat'];
-		$slink=t3lib_div::_GP('shortlink');
+		$slink=\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('shortlink');
 		if(isset($slink)) {
-			$this->shortlink = t3lib_div::_GP('shortlink');
+			$this->shortlink = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('shortlink');
 		}
 		if(isset($this->piVars['shortlink'])){
 			$this->shortlink = $this->piVars['shortlink'];
@@ -225,7 +225,7 @@ class tx_sbdownloader_pi1 extends tslib_pibase {
 			$this->pi_USER_INT_obj = 0;	
 		}
 		// latest und search
-		if(!t3lib_extMgm::isLoaded('sb_downloader')){
+		if(!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('sb_downloader')){
 			$whereLatest = $where;	
 		}else{
 			$whereLatest = array();
@@ -405,17 +405,17 @@ class tx_sbdownloader_pi1 extends tslib_pibase {
 				if(in_array($imageext,$imagemimetypes)) {
 					$img = $this->conf["image."];
 					$img["file"] = $filepath;
-					$showImage = $this->cObj->IMAGE($img);
+					$showImage = $this->cObj->cObjGetSingle('IMAGE',$img);
 					
 					break;
 				}else{
 					// check fileext
-					$fileinfo = t3lib_div::split_fileref($val);
+					$fileinfo = \TYPO3\CMS\Core\Utility\GeneralUtility::split_fileref($val);
 					$fileExt=trim($fileinfo['fileext']);
 					if($fileExt == "pdf") {
 						$img = $this->conf["image."];
 						$img["file"] = $filepath;
-						$showImage = $this->cObj->IMAGE($img);
+						$showImage = $this->cObj->cObjGetSingle('IMAGEIMAGEIMAGE',$img);
 						
 						break;
 					}else{
@@ -929,7 +929,7 @@ class tx_sbdownloader_pi1 extends tslib_pibase {
 		$markerArray['###MODIFICATIONDATE###'] = '';
 		$markerArray['###LINKDESCRIPTION###'] = '';
 		$markerArray['###LASTEDIT###'] = '';
-		$fileinfo = t3lib_div::split_fileref($val);
+		$fileinfo = \TYPO3\CMS\Core\Utility\GeneralUtility::split_fileref($val);
 
 		
 		// print_r($description);
@@ -1181,7 +1181,7 @@ class tx_sbdownloader_pi1 extends tslib_pibase {
 			$GLOBALS['TSFE']->fe_user->setKey('ses', 'did', $uid); 
 			$GLOBALS["TSFE"]->storeSessionData();
 			$link = $this->pi_getPageLink($this->loginpage, '', $vars);
-			$link = t3lib_div::locationHeaderUrl($link); 
+			$link = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($link); 
 			header('Location: '.$link); 
 			exit();			
 		}
@@ -1194,7 +1194,7 @@ class tx_sbdownloader_pi1 extends tslib_pibase {
     // print_r($GLOBALS ['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]);
 		if (is_array ($GLOBALS ['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey])) {
 			foreach ($GLOBALS ['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['hook'] as $classRef) {
-				$this->mHooks[] = &t3lib_div::getUserObj($classRef);		
+				$this->mHooks[] = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($classRef);		
 			}
 		}
 	}// function initHooks
