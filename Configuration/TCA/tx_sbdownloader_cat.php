@@ -1,7 +1,7 @@
 <?php
 if (TYPO3_MODE=='BE') {
     // class for displaying the unit tree in BE forms.
-    include_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('sb_downloader').'class.tx_sbdownloader_treeview.php';
+    include_once \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'Classes/class.tx_sbdownloader_treeview.php';
 }
 return array(
     "ctrl" => array (
@@ -10,7 +10,7 @@ return array(
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
         'cruser_id' => 'cruser_id',
-        'versioningWS' => true, 
+        'versioningWS' => true,
         'origUid' => 't3_origuid',
         'searchFields' => 'cat',
         'languageField'            => 'sys_language_uid',
@@ -111,7 +111,7 @@ return array(
                 // 'foreign_table_where' => $fTableWhere,
                 // 'MM' => 'tx_riorganisation_businessunit_parent_bu_mm',
                 // 'table_MM' => 'tx_riorganisation_businessunit_parent_bu_mm',
-            // ),    
+            // ),
             /*'config' => Array (
                 'type' => 'select',
                 //'form_type' => 'user',
@@ -165,7 +165,7 @@ return array(
                 ],
             ],
 
-        ),        
+        ),
     ),
     "types" => array (
         "0" => array("showitem" => "sys_language_uid;;;;1-1-1, l18n_parent, l18n_diffsource, hidden;;1, cat, parent_cat")
